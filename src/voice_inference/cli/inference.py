@@ -31,6 +31,7 @@ OUTPUT_DIR = ROOT_DIR / "outputs"
 @click.option("--max-tokens", type=int, help="Override max tokens for generation")
 @click.option("--n-gpus", type=int, help="Number of GPUs to use for inference")
 @click.option("--wandb-run-id", help="Attach to existing wandb run ID")
+@click.option("--base-model", type=str, help="Override to use base model")
 def main(
     config_path: str,
     log_level: str,
@@ -38,6 +39,7 @@ def main(
     max_tokens: int,
     n_gpus: int,
     wandb_run_id: str,
+    base_model: str,
 ) -> None:
     """
     Run inference with vLLM and specified configuration.
@@ -48,6 +50,7 @@ def main(
     :param max_tokens: Optional override for max tokens for generation
     :param n_gpus: Optional override for number of GPUs to use for inference
     :param wandb_run_id: Option to attach to an existing wandb run ID.
+    :param base_model: Optional override to use base model
     :return: None
     """
     setup_logging(log_level, log_file)
@@ -71,6 +74,12 @@ def main(
         if n_gpus is not None:
             config.gpus = n_gpus
             logger.info("Overriding number of GPUs to: {}", n_gpus)
+        if base_model is not None:
+            config.model = base_model
+            logger.info(
+                "Overriding model to use base model for comparison: {}",
+                base_model
+            )
 
         logger.success("Config loaded successfully!")
         print("Current configuration:")
@@ -117,7 +126,7 @@ def main(
         for example in dataset
     ]
 
-    quantization = "bitsandbytes" if config.quantization else None
+    quantization = "bitsandbytes" if config.quantization and not base_model else None
 
     logger.info("Instantiating model {}", config.model)
     llm = LLM(
@@ -159,9 +168,11 @@ def main(
 
     # Log results as wandb artifact
     if wandb_run_id:
+        artifact_type = "Results" if not base_model else "BaseResults"
+
         artifact = wandb.Artifact(
-            name=run.name + "-Results",
-            type="Results",
+            name=f"{run.name}-{artifact_type}",
+            type=artifact_type,
         )
         artifact.add_file(str(output_path))
 
