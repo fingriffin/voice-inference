@@ -18,6 +18,7 @@ from voice_inference.config import (
 )
 from voice_inference.hf import configure_hf, get_token
 from voice_inference.logging import setup_logging
+from voice_inference.utils import clean_wandb_run
 
 ROOT_DIR = Path.cwd()
 MODEL_DIR = ROOT_DIR / "models"
@@ -178,3 +179,5 @@ def main(
 
         run.log_artifact(artifact)
         run.finish()
+
+        clean_wandb_run(wandb_run_id)
