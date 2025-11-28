@@ -16,6 +16,7 @@ KEEP_ARTIFACTS = [
     'BaseResults',
     'Analysis',
     'Log',
+    'wandb-history'
 ]
 
 def clean_wandb_run(wandb_run_id: str) -> None:
