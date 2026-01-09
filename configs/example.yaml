@@ -8,5 +8,6 @@ split: test # Split of the dataset to use (e.g. train, validation, test)
 gpus: 1 # Number of GPUs to use
 quantization: # Quantization method to use (e.g. "4bit", "8bit", or leave empty for no quantization)
 max_tokens: 2048 # Maximum number of tokens for generation
+temperature: 0.7 # Temperature for sampling during inference
 
 output_file: # Local path to save the output predictions

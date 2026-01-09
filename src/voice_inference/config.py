@@ -22,6 +22,10 @@ class InferenceConfig(BaseModel):
         None, description="Quantization method to use (must be '4bit' if provided)"
     )
     max_tokens: int = Field(256, description="Maximum tokens to generate per prompt")
+    temperature: float = Field(
+        0.7,
+        description="Temperature for sampling during inference"
+    )
 
     output_file: str = Field(..., description="Path to save the output results")
 

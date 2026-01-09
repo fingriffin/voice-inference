@@ -140,6 +140,7 @@ def main(
 
     sampling_params = SamplingParams(
         max_tokens=config.max_tokens,
+        temperature=config.temperature,
     )
 
     logger.info("Running batched chat inference on {} prompts", len(chat_prompts))
